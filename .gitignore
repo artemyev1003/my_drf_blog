@@ -1,0 +1,9 @@
+venv
+db.sqlite3
+api/core/migrations
+.idea
+api/core/__pycache__
+api/api/__pycache__
+api/core/management/commands/__pycache__/
+
+
