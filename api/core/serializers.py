@@ -30,3 +30,9 @@ class TagSerializer(serializers.ModelSerializer):
             'url': {'lookup_field': 'name'}
         }
 
+
+class ContactSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    email = serializers.CharField()
+    subject = serializers.CharField()
+    message = serializers.CharField()

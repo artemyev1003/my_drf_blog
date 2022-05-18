@@ -1,8 +1,11 @@
 from rest_framework import viewsets, permissions, generics
-from .serializers import PostSerializer, TagSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializers import PostSerializer, TagSerializer, ContactSerializer
 from .models import Post
 from rest_framework import pagination
 from taggit.models import Tag
+from django.core.mail import send_mail
 
 
 class PageNumberSetPagination(pagination.PageNumberPagination):
@@ -34,3 +37,26 @@ class TagView(generics.ListAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = [permissions.AllowAny]
+
+
+class AsideView(generics.ListAPIView):
+    queryset = Post.objects.all().order_by('-id')[:5]
+    serializer_class = PostSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class FeedBackView(APIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = ContactSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer_class = ContactSerializer(data=request.data)
+        if serializer_class.is_valid():
+            data = serializer_class.validated_data
+            name = data.get('name')
+            from_email = data.get('email')
+            subject = data.get('subject')
+            message = data.get('message')
+            send_mail(f'From {name} | {subject}', f'{message} \n\nby {from_email}',
+                      None, ['artemyev93@gmail.com'])
+            return Response({"success": "Sent"})
