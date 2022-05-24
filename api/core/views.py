@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, generics
+from rest_framework import viewsets, permissions, generics, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import PostSerializer, TagSerializer, ContactSerializer
@@ -20,6 +20,8 @@ class PostViewSet(viewsets.ModelViewSet):
     lookup_field = 'slug'
     permission_classes = [permissions.AllowAny]
     pagination_class = PageNumberSetPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['content', 'h1']
 
 
 class TagDetailView(generics.ListAPIView):
